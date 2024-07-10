@@ -4,7 +4,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 #start chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\Selenium\ChromeTestProfile"
-#https://www8.receita.fazenda.gov.br/simplesnacional/aplicacoes.aspx?id=21
 
 def iniciar_navegador(com_debugging_remoto=True):
     chrome_driver_path = ChromeDriverManager().install()
