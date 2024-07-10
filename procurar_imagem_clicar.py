@@ -1,3 +1,5 @@
+import pyautogui
+
 max_tentativas = 2
 tentativas = 0
 while tentativas < max_tentativas:
