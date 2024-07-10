@@ -1,3 +1,9 @@
+import mousekey
+import random
+import time
+mkey = mousekey.MouseKey()
+
+
 def move_mouse(
     x,
     y,
