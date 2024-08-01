@@ -7,7 +7,12 @@ from selenium.webdriver.chrome.options import Options
 
 def iniciar_navegador(com_debugging_remoto=True):
     chrome_driver_path = ChromeDriverManager().install()
-    service = Service(executable_path=chrome_driver_path)
+    chrome_driver_executable = os.path.join(os.path.dirname(chrome_driver_path), 'chromedriver.exe')
+    
+    if not os.path.isfile(chrome_driver_executable):
+        raise FileNotFoundError(f"O ChromeDriver não foi encontrado em {chrome_driver_executable}")
+
+    service = Service(executable_path=chrome_driver_executable)
     
     chrome_options = Options()
     if com_debugging_remoto:
@@ -18,6 +23,4 @@ def iniciar_navegador(com_debugging_remoto=True):
     return navegador
 
 navegador = iniciar_navegador(com_debugging_remoto=True)
-navegador.quit()
-
 
