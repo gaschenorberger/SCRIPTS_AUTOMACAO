@@ -14,9 +14,6 @@ while tentativas < max_tentativas:
         break
 
 
-
-
-
 """2 OPÇÃO"""
 
 
