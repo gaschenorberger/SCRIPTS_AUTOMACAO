@@ -10,7 +10,7 @@ while tentativas < max_tentativas:
         print('Abrindo (x)')
         continue
     except:
-        print('Não encontrei o BX')
+        print('Não encontrei o X')
         break
 
 
