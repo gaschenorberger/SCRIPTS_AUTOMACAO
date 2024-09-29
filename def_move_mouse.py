@@ -27,3 +27,5 @@ def move_mouse(
         print_coords=True,
         percent=linear,
     )
+
+move_mouse(coordenada)
