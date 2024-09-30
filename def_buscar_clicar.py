@@ -2,7 +2,7 @@
 
 #pip install pyautogui pytesseract pillow opencv-python numpy
 #https://github.com/UB-Mannheim/tesseract/wiki -- instalar tesseract
-#https://github.com/tesseract-ocr/tessdata/blob/main/por.traineddata -- idioma português
+#https://github.com/tesseract-ocr/tessdata/blob/main/por.traineddata -- idioma português -- COLOCAR NA PASTA DO TESSERACT (C:\Program Files\Tesseract-OCR\tessdata)
 
 from PIL import ImageGrab
 import pyautogui
