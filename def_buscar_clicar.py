@@ -15,67 +15,64 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 
 def preprocessar_imagem(imagem):
     imagem_cinza = cv2.cvtColor(np.array(imagem), cv2.COLOR_BGR2GRAY)
-    
     _, imagem_binaria = cv2.threshold(imagem_cinza, 150, 255, cv2.THRESH_BINARY)
-    
     return Image.fromarray(imagem_binaria)
 
+def tentar_deteccao(imagem, config):
+    try:
+        return pytesseract.image_to_data(imagem, lang='por', output_type=pytesseract.Output.DICT, config=config)
+    except Exception as e:
+        print(f"Erro na detecção: {e}")
+        return None
+
+def normalizar_texto(texto):
+    return ''.join(c for c in texto if c.isalnum()).lower()
+
 def palavras_similares(palavra_detectada, palavra_busca):
-    similaridade = difflib.SequenceMatcher(None, palavra_detectada, palavra_busca).ratio()
+    similaridade = difflib.SequenceMatcher(None, normalizar_texto(palavra_detectada), normalizar_texto(palavra_busca)).ratio()
     return similaridade > 0.8 
 
 def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click=1, coordenadas=None):
-    if coordenadas:
-        x, y, largura, altura = coordenadas
-        screenshot = ImageGrab.grab(bbox=(x, y, x + largura, y + altura)) 
-    else:
-        screenshot = ImageGrab.grab()  
-
+    screenshot = ImageGrab.grab(bbox=coordenadas) if coordenadas else ImageGrab.grab()  
     largura_imagem, altura_imagem = screenshot.size  
 
     imagem_processada = preprocessar_imagem(screenshot)
-    
-    config = '--oem 3 --psm 6' 
-    
-    texto_tela = pytesseract.image_to_data(imagem_processada, lang='por', output_type=pytesseract.Output.DICT, config=config)
+    config = '--oem 3 --psm 6'
+    texto_tela = tentar_deteccao(imagem_processada, config)
+
+    if not texto_tela:
+        print(f'Não foi possível detectar o texto.')
+        return
     
     palavras_detectadas = texto_tela['text']
-    coordenadas_detectadas = list(zip(texto_tela['left'], texto_tela['top']))
+    coordenadas_detectadas = list(zip(texto_tela['left'], texto_tela['top'], texto_tela['width'], texto_tela['height']))
 
     # Verifica as coordenadas de cada palavra
-    """print("Palavras e suas coordenadas detectadas:")
+    print("Palavras e suas coordenadas detectadas:")
     for i, palavra in enumerate(palavras_detectadas):
         if palavra.strip() != "":
-            print(f"Palavra: '{palavra}', Coordenadas: ({texto_tela['left'][i]}, {texto_tela['top'][i]})")"""
-    
-    ocorrencias_encontradas = []
-    palavras_busca = texto_busca.split()
+            print(f"Palavra: '{palavra}', Coordenadas: ({texto_tela['left'][i]}, {texto_tela['top'][i]})")
 
-    for i in range(len(palavras_detectadas)):
-        if palavras_similares(palavras_detectadas[i], palavras_busca[0]):
-            frase_atual = palavras_detectadas[i:i + len(palavras_busca)]
-            if len(frase_atual) == len(palavras_busca) and all(palavras_similares(frase_atual[j], palavras_busca[j]) for j in range(len(palavras_busca))):
-                x, y = coordenadas_detectadas[i]
-                ocorrencias_encontradas.append((x, y))
+    ocorrencias_encontradas = [
+        (x, y, largura, altura)
+        for i, palavra in enumerate(palavras_detectadas)
+        if palavras_similares(palavra, texto_busca.split()[0])
+        for x, y, largura, altura in [coordenadas_detectadas[i]]
+    ]
 
     if len(ocorrencias_encontradas) >= ocorrencia:
-        x, y = ocorrencias_encontradas[ocorrencia - 1]  
+        x, y, largura, altura = ocorrencias_encontradas[ocorrencia - 1]
     else:
-        print(f'A ocorrência {ocorrencia} da palavra "{texto_busca}" não foi encontrada na tela.')
+        print(f'A ocorrência {ocorrencia} da palavra "{texto_busca}" não foi encontrada.')
         return
-
-    if coordenadas:
-        x, y, _, _ = coordenadas
 
     if 0 <= x <= largura_imagem and 0 <= y <= altura_imagem:
         pyautogui.moveTo(x + horizontal, y + vertical)
-
         if click == 2:
             pyautogui.doubleClick()
-            print(f'Double click na ocorrência {ocorrencia} da palavra "{texto_busca}" nas coordenadas ({x + horizontal}, {y + vertical})!')
-        else: 
+        else:
             pyautogui.click()
-            print(f'Clique na ocorrência {ocorrencia} da palavra "{texto_busca}" nas coordenadas ({x + horizontal}, {y + vertical})!')
+        print(f'Clique na ocorrência {ocorrencia} da palavra "{texto_busca}" nas coordenadas ({x + horizontal}, {y + vertical})!')
     else:
         print(f'Coordenadas ({x}, {y}) estão fora dos limites da tela.')
 
