@@ -5,6 +5,7 @@
 #https://github.com/tesseract-ocr/tessdata/blob/main/por.traineddata -- idioma português -- COLOCAR NA PASTA DO TESSERACT (C:\Program Files\Tesseract-OCR\tessdata)
 
 from PIL import ImageGrab
+from PIL import Image
 import pyautogui
 import pytesseract
 import cv2
