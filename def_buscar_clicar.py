@@ -76,7 +76,7 @@ def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click
     else:
         print(f'Coordenadas ({x}, {y}) estão fora dos limites da tela.')
 
-buscar_e_clicar('palavra/frase', click=1 (1 click) ou click=2 (doubleClick), horizontal=50 (opcional), vertical=50 (opcional), ocorrencia=2 (caso haja duas palavras iguals), coordenadas=(x, y)) #CUSTOMIZE DA FORMA NECESSÁRIA
-buscar_e_clicar('x', click=2, horizontal=50, vertical=50, ocorrencia=2, coordenadas=(x, y)) #EXEMPLO 
+buscar_e_clicar('palavra/frase', click=1 (1 click) ou click=2 (doubleClick), horizontal=50 (opcional), vertical=50 (opcional), ocorrencia=2 (caso haja duas palavras iguais)) #CUSTOMIZE DA FORMA NECESSÁRIA
+buscar_e_clicar('x', click=2, horizontal=50, vertical=50, ocorrencia=2) #EXEMPLO 
 
 
