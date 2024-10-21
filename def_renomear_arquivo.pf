@@ -6,11 +6,6 @@ def renomear_arquivo(pasta_downloads, nome_do_arquivo):
     # Define o caminho completo do novo arquivo
     novo_nome_base = os.path.join(pasta_downloads, nome_do_arquivo)
     extensao = '.zip'
-
-    pasta_matriz_saidas = r"robo_download_nfe\matriz\saidas" 
-      nome_arq = f'MATRIZ - {notas_fiscais} - {inicio}'
-      nome_do_arquivo = nome_arq.replace('/', '_')
-      print(nome_do_arquivo)
     
     # Verifica se o arquivo já existe e cria um novo nome se necessário
     
@@ -26,6 +21,11 @@ def renomear_arquivo(pasta_downloads, nome_do_arquivo):
     else:
         print("Arquivo para renomear não encontrado.")
 
+
+pasta_matriz_saidas = r"robo_download_nfe\matriz\saidas" 
+nome_arq = f'MATRIZ - {notas_fiscais} - {inicio}'
+nome_do_arquivo = nome_arq.replace('/', '_')
+print(nome_do_arquivo)
 
 # Verifica se o arquivo foi baixado com sucesso
 if os.path.exists(os.path.join(pasta_matriz_saidas, "arquivo_completo.zip")):
