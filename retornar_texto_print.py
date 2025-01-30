@@ -1,3 +1,5 @@
+# Especifique o caminho do print (image_path) para que possa ser feito a leitura e retornar o que reconheceu em texto
+
 from PIL import Image, ImageEnhance
 import pytesseract
 
