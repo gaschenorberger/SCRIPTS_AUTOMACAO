@@ -4,17 +4,7 @@
 #https://github.com/UB-Mannheim/tesseract/wiki -- instalar tesseract
 #https://github.com/tesseract-ocr/tessdata/blob/main/por.traineddata -- idioma português -- COLOCAR NA PASTA DO TESSERACT (C:\Program Files\Tesseract-OCR\tessdata)
 
-from PIL import ImageGrab
-from PIL import Image
-import pyautogui
-import pytesseract
-import cv2
-import numpy as np
-import difflib
-
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe" 
-
-def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click=1, coordenadas=None, max_tentativas=50):
+def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click=1, coordenadas=None, max_tentativas=50, debug=True):
 
     def preprocessar_imagem(imagem):
         imagem_cinza = cv2.cvtColor(np.array(imagem), cv2.COLOR_BGR2GRAY)
@@ -45,13 +35,15 @@ def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click
         bbox = None 
 
     while tentativa < max_tentativas and not encontrado:
-        print(f"Tentativa {tentativa + 1} de {max_tentativas} para encontrar '{texto_busca}'")
+        if debug:
+            print(f"Tentativa {tentativa + 1} de {max_tentativas} para encontrar '{texto_busca}'")
 
         screenshot = ImageGrab.grab(bbox=bbox)  
         if coordenadas:
             print(f'Capturando área: {coordenadas}')
         else:
-            print('Capturando tela inteira.')
+            if debug:
+                print('Capturando tela inteira.')
 
         largura_imagem, altura_imagem = screenshot.size  
 
@@ -67,11 +59,13 @@ def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click
         palavras_detectadas = texto_tela['text']
         coordenadas_detectadas = list(zip(texto_tela['left'], texto_tela['top'], texto_tela['width'], texto_tela['height']))
 
-         # Verifica as coordenadas de cada palavra
+        # Verifica as coordenadas de cada palavra
+        """
         print("Palavras e suas coordenadas detectadas:")
         for i, palavra in enumerate(palavras_detectadas):
             if palavra.strip() != "":
                 print(f"Palavra: '{palavra}', Coordenadas: ({texto_tela['left'][i]}, {texto_tela['top'][i]})")
+        """
 
         ocorrencias_encontradas = [
             (x, y, largura, altura)
@@ -84,8 +78,9 @@ def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click
             x, y, largura, altura = ocorrencias_encontradas[ocorrencia - 1]
             encontrado = True
         else:
-            print(f'A ocorrência {ocorrencia} da palavra "{texto_busca}" não foi encontrada.')
-            tentativa += 1
+            if debug:
+                print(f'A ocorrência {ocorrencia} da palavra "{texto_busca}" não foi encontrada.')
+                tentativa += 1
 
     if encontrado:
         if 0 <= x <= largura_imagem and 0 <= y <= altura_imagem:
@@ -98,7 +93,10 @@ def buscar_e_clicar(texto_busca, ocorrencia=1, horizontal=10, vertical=10, click
         else:
             print(f'Coordenadas ({x}, {y}) estão fora dos limites da tela.')
     else:
-        print(f'Não foi possível encontrar a palavra "{texto_busca}" após {max_tentativas} tentativas.')
+        if debug:
+            print(f'Não foi possível encontrar a palavra "{texto_busca}" após {max_tentativas} tentativas.')
+    
+    return encontrado
         
 buscar_e_clicar('palavra/frase', click=1 (1 click) ou click=2 (doubleClick), horizontal=50 (opcional), vertical=50 (opcional), ocorrencia=2 (caso haja duas palavras iguais)) #CUSTOMIZE DA FORMA NECESSÁRIA
 buscar_e_clicar('x', click=2, horizontal=50, vertical=50, ocorrencia=2) #EXEMPLO 
