@@ -11,3 +11,13 @@ def ativar_pagina(nome_pag): #ATIVA A PAGINA
     window.activate()
 
 ativar_pagina('GitHub - Google Chrome')
+
+
+
+# EXEMPLO PARA LOOP, ENQUANTO NAO TIVER UMA JANELA ABERTA ELE ESPERA ATE ESTAR ABERTA PARA CONTINUAR
+
+while not any('Kaspersky VPN' in janela for janela in consultar_janelas_abertas()):
+        print("Esperando o Kaspersky VPN abrir...")
+        time.sleep(1) 
+
+print("Kaspersky VPN foi aberto!")
