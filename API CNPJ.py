@@ -25,3 +25,8 @@ import time
             except Exception as e:
                 print(f"[ERRO] Falha ao consultar CNPJ: {e}. Tentando de novo em 20 segundos...")
                 time.sleep(20)
+
+
+# EXEMPLO DE USO
+
+get_cnpj_data("xxxxxxxxxxxxxx") # SEM A FORMATAÇÃO DO CNPJ
